@@ -4,8 +4,8 @@ use vexide::color::Color;
 use vexide::{prelude::*, smart::PortError};
 
 pub struct Robot {
-    pub left_train: [Motor; 2], // Just to be more explicit, I'm using an array
-    pub right_train: [Motor; 2],
+    pub left_train: [Motor; 1], // Just to be more explicit, I'm using an array
+    pub right_train: [Motor; 1],
     pub controller: Controller,
     pub screen: ScreenModule,
 }
@@ -18,13 +18,13 @@ impl Robot {
 
         // Initialize Motors for drive trains
         let left_front = Motor::new(p.port_1, Gearset::Green, Direction::Forward);
-        let left_back = Motor::new(p.port_2, Gearset::Green, Direction::Forward);
-        let right_front = Motor::new(p.port_13, Gearset::Green, Direction::Forward);
-        let right_back = Motor::new(p.port_14, Gearset::Green, Direction::Forward);
+        //let left_back = Motor::new(p.port_2, Gearset::Green, Direction::Forward);
+        let right_front = Motor::new(p.port_11, Gearset::Green, Direction::Reverse);
+        //let right_back = Motor::new(p.port_14, Gearset::Green, Direction::Reverse);
         screen.print(":: Motors Initialized");
 
-        let left_train = [left_front, left_back];
-        let right_train = [right_front, right_back];
+        let left_train = [left_front /*left_back*/];
+        let right_train = [right_front /*right_back*/];
 
         // Other components
         let controller = p.primary_controller;
@@ -37,9 +37,9 @@ impl Robot {
             screen,
         };
 
+        robot.screen.set_color(Color::GREEN);
         robot.screen.print(":: Robot Initialized Successfully!");
-        robot.sleep(100);
-        robot.screen.clear_screen();
+        robot.screen.set_color(Color::WHITE);
         robot
     }
 
@@ -48,7 +48,7 @@ impl Robot {
 
         let port_text = match err {
             PortError::Disconnected { port } => {
-                format!("Port {port} disconnected")
+                format!("Port {port} disconnected!")
             }
             PortError::IncorrectDevice {
                 expected,

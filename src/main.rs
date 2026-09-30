@@ -15,9 +15,8 @@ impl Compete for Robot {
 
     async fn driver(&mut self) {
         let mut ticker = Ticker::new(Duration::from_millis(15));
+        self.screen.print_at([400, 4], "DRIVER"); // cool corner label
         loop {
-            self.screen.print_at([400, 4], "DRVR"); // cool corner label
-
             let state = self.controller.state().unwrap_or_default();
 
             // Supposed arcade drive setup
@@ -33,6 +32,7 @@ impl Compete for Robot {
                 .try_for_each(|motor| motor.set_voltage(left_voltage))
             {
                 self.port_error(e);
+                break;
             }
             if let Err(e) = self
                 .right_train
@@ -40,6 +40,7 @@ impl Compete for Robot {
                 .try_for_each(|motor| motor.set_voltage(right_voltage))
             {
                 self.port_error(e);
+                break;
             }
 
             ticker.tick().await;
